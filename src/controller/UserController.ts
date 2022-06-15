@@ -1,5 +1,7 @@
 import {findAllUsers, findUserById, create} from '../models/UserModel';
 import {IncomingMessage, ServerResponse} from 'http';
+import {getPostData} from "../utils";
+import {IUser} from "../users";
 
 export async function getUsers (req:IncomingMessage,res:ServerResponse) {
     try {
@@ -33,13 +35,21 @@ export async function getUser(req:IncomingMessage,res:ServerResponse,id:string) 
 
 export async function createUser(req:IncomingMessage,res:ServerResponse) {
     try {
-        const user = await create({
-            username: 'Peter',
-            age: 73,
-            hobbies: ['handball', 'beer']
-        })
-        res.writeHead(201, { 'Content-Type': 'application/json' })
-        return res.end(JSON.stringify(user))
+        const body = await getPostData(req);
+
+        if (typeof body === "string") {
+            const {username, age, hobbies} = JSON.parse(JSON.parse(body));
+            const user:IUser = {
+                username,
+                age,
+                hobbies
+            }
+            const newUser = await create(user);
+
+            res.writeHead(201, { 'Content-Type': 'application/json' })
+            return res.end(JSON.stringify(newUser))
+        }
+
     }
     catch (e) {
         console.log(e.message)
