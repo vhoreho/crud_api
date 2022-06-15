@@ -1,4 +1,4 @@
-import {findAllUsers, findUserById} from '../models/UserModel';
+import {findAllUsers, findUserById, create} from '../models/UserModel';
 import {IncomingMessage, ServerResponse} from 'http';
 
 export async function getUsers (req:IncomingMessage,res:ServerResponse) {
@@ -25,6 +25,21 @@ export async function getUser(req:IncomingMessage,res:ServerResponse,id:string) 
             res.end(JSON.stringify(user));
         }
 
+    }
+    catch (e) {
+        console.log(e.message)
+    }
+}
+
+export async function createUser(req:IncomingMessage,res:ServerResponse) {
+    try {
+        const user = await create({
+            username: 'Peter',
+            age: 73,
+            hobbies: ['handball', 'beer']
+        })
+        res.writeHead(201, { 'Content-Type': 'application/json' })
+        return res.end(JSON.stringify(user))
     }
     catch (e) {
         console.log(e.message)

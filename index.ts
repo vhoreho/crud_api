@@ -1,5 +1,5 @@
 import {createServer} from 'http';
-import {getUsers, getUser} from './src/controller/UserController';
+import {getUsers, getUser, createUser} from './src/controller/UserController';
 
 const PORT = process.env.PORT || 3000;
 process.setMaxListeners(0);
@@ -11,6 +11,8 @@ const server = createServer(async (req, res) => {
         const id = req.url.split('/')[2];
 
         await getUser(req,res,id);
+    } else if (req.url === '/users' && req.method === 'POST') {
+        await createUser(req, res);
     } else {
         res.writeHead(404, {"Content-Type":"application/json"});
         res.end(JSON.stringify({message: 'Route not found'}))
