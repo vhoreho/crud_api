@@ -1,5 +1,5 @@
 import {createServer} from 'http';
-import {getUsers, getUser, createUser, updateUser} from './controller/UserController';
+import {getUsers, getUser, createUser, updateUser, deleteUser} from './controller/UserController';
 import {config} from 'dotenv';
 
 config();
@@ -20,6 +20,9 @@ const server = createServer(async (req, res) => {
         const id = req.url.split('/')[2];
 
         await updateUser(req,res, id);
+    } else if(req.url.match(/\/users\/(\d+)/) && req.method === 'DELETE') {
+        const id = req.url.split('/')[2]
+        await deleteUser(req, res, id)
     } else {
         res.writeHead(404, {"Content-Type":"application/json"});
         res.end(JSON.stringify({message: 'Route not found'}))

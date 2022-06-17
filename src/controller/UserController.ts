@@ -1,4 +1,4 @@
-import {findAllUsers, findUserById, create, update} from '../models/UserModel';
+import {findAllUsers, findUserById, create, update,remove} from '../models/UserModel';
 import {IncomingMessage, ServerResponse} from 'http';
 import {getPostData} from "../utils";
 import {IUser} from "../users";
@@ -12,7 +12,8 @@ export async function getUsers (req:IncomingMessage,res:ServerResponse) {
         res.end(JSON.stringify(users));
     }
     catch (e) {
-        console.log(e.message)
+        res.writeHead(500, {"Content-Type":"application/json"});
+        res.end(JSON.stringify({message: e.message}))
     }
 }
 
@@ -33,7 +34,8 @@ export async function getUser(req:IncomingMessage,res:ServerResponse,id:string) 
 
     }
     catch (e) {
-        console.log(e.message)
+        res.writeHead(500, {"Content-Type":"application/json"});
+        res.end(JSON.stringify({message: e.message}))
     }
 }
 
@@ -59,7 +61,8 @@ export async function createUser(req:IncomingMessage,res:ServerResponse) {
         }
     }
     catch (e) {
-        console.log(e.message)
+        res.writeHead(500, {"Content-Type":"application/json"});
+        res.end(JSON.stringify({message: e.message}))
     }
 }
 
@@ -81,7 +84,6 @@ export async function updateUser(req:IncomingMessage, res:ServerResponse, id:str
                     hobbies: hobbies
                 };
 
-                console.log(user)
                 const newUser = await update(id, data);
                 if (username && age && hobbies && typeof username === 'string' && typeof age === 'number' && Array.isArray(hobbies)) {
                     res.writeHead(200, {'Content-Type': 'application/json'})
@@ -100,6 +102,24 @@ export async function updateUser(req:IncomingMessage, res:ServerResponse, id:str
         }
     }
     catch (e) {
-        console.log(e.message)
+        res.writeHead(500, {"Content-Type":"application/json"});
+        res.end(JSON.stringify({message: e.message}))
+    }
+}
+
+export async function deleteUser(req:IncomingMessage, res:ServerResponse, id:string) {
+    try {
+        const user = await findUserById(id)
+
+        if(!user) {
+            res.writeHead(404, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({ message: 'User Not Found' }))
+        } else {
+            await remove(id)
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({ message: `user ${id} removed` }))
+        }
+    } catch (error) {
+        console.log(error)
     }
 }

@@ -33,3 +33,10 @@ export function update(id: string, data:IUser) {
         resolve(Users[userIndex]);
     })
 }
+
+export function remove(id:string) {
+    return new Promise<void>(resolve => {
+        Users.filter(item => item.id !== id);
+        resolve()
+    })
+}
