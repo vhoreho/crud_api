@@ -1,21 +1,8 @@
 export interface IUser {
     id?: string,
-    username: string,
-    age: number,
-    hobbies: string[]
+    username: string | unknown,
+    age: number | unknown,
+    hobbies: string[] | unknown[];
 }
 
-export const Users:IUser[] = [
-    {
-        id: '1hds2',
-        username: 'Michael',
-        age: 23,
-        hobbies: ['football', 'hockey']
-    },
-    {
-        id: '16',
-        username: 'Vlad',
-        age: 33,
-        hobbies: ['football', 'hockey']
-    }
-]
+export const Users:IUser[] = []

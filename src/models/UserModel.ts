@@ -15,8 +15,21 @@ export function findUserById(id:string) {
 }
 export function create(user:IUser) {
     return new Promise(resolve => {
-        const newUser = {id:v4(), ...user};
-        Users.push(newUser);
-        resolve(newUser);
+        try {
+            const newUser:IUser = {id:v4(), ...user};
+            Users.push(newUser);
+            resolve(newUser);
+        }
+        catch (e) {
+            console.log(e.message)
+        }
+    })
+}
+
+export function update(id: string, data:IUser) {
+    return new Promise(resolve => {
+        const userIndex = Users.findIndex(item => item.id === id);
+        Users[userIndex] = {id, ...data}
+        resolve(Users[userIndex]);
     })
 }
